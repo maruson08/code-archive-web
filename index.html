@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코드 아카이브 - 수강 코드 모음</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 헤더 -->
+        <header class="header">
+            <div class="header-content">
+                <h1>📚 코드 아카이브</h1>
+                <p class="subtitle">대학 수강 과정에서 작성한 알고리즘 및 자료구조 코드 모음</p>
+            </div>
+        </header>
+
+        <!-- 검색 및 필터 섹션 -->
+        <div class="controls">
+            <div class="search-box">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    placeholder="코드 제목, 주제로 검색..."
+                    class="search-input"
+                >
+                <span class="search-icon">🔍</span>
+            </div>
+
+            <div class="filter-section">
+                <label for="categoryFilter">카테고리:</label>
+                <select id="categoryFilter" class="filter-select">
+                    <option value="">전체</option>
+                    <option value="DP">동적계획법 (DP)</option>
+                    <option value="분할정복">분할정복</option>
+                    <option value="해시">해시 테이블</option>
+                    <option value="탐색">문자열 탐색</option>
+                    <option value="백트래킹">백트래킹</option>
+                    <option value="자료구조">자료구조</option>
+                    <option value="그래프">그래프</option>
+                </select>
+            </div>
+
+            <div class="stats">
+                <span id="resultCount">코드 0개</span>
+            </div>
+        </div>
+
+        <!-- 메인 콘텐츠 -->
+        <main class="main-content">
+            <div id="codeList" class="code-list">
+                <!-- JavaScript에서 동적으로 생성 -->
+            </div>
+        </main>
+
+        <!-- 모달 창 -->
+        <div id="codeModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id="modalTitle"></h2>
+                    <button class="close-btn" id="closeModal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="code-info">
+                        <span class="info-badge" id="modalSubject"></span>
+                        <span class="info-badge" id="modalCategory"></span>
+                        <span class="info-badge info-file" id="modalFile"></span>
+                    </div>
+                    <pre id="codeContent" class="code-block"><code></code></pre>
+                    <div class="modal-actions">
+                        <button id="copyBtn" class="action-btn copy-btn">📋 코드 복사</button>
+                        <button id="downloadBtn" class="action-btn download-btn">⬇️ 다운로드</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 푸터 -->
+        <footer class="footer">
+            <p>© 2024 손원희 - 수강 코드 아카이브</p>
+        </footer>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
