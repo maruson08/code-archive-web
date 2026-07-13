@@ -1,0 +1,30 @@
+# 시스템 파일
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# IDE
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# 빌드/번들 파일
+node_modules/
+dist/
+build/
+
+# 환경 변수
+.env
+.env.local
+.env.*.local
+
+# 로그
+*.log
+npm-debug.log*
+
+# 기타
+.cache/
+tmp/
