@@ -193,7 +193,7 @@ function getCategoryClass(category) {
         '해시': 'hash',
         '탐색': 'search',
         '백트래킹': 'backtrack',
-        '자료구조': 'dp',
+        '자료구조': 'search',
         '그래프': 'dp',
         '그리디': 'search'
     };

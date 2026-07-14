@@ -198,30 +198,65 @@ def boyer_moore(text, pattern):
     },
     {
         id: 10,
-        title: "Rabin-Karp 해시 탐색",
+        title: "Rabin-Karp로 최장 공통 부분 문자열 찾기",
         subject: "문자열 처리",
         category: "탐색",
         file: "정보_3주차_4조_발표_자료(손원희,_송연경,_주윤재).ipynb",
-        description: "해시 값을 이용해 패턴 비교 범위를 줄여 문자열을 빠르게 찾는 방식입니다.",
-        code: `def rabin_karp(text, pattern, q):
-    d = 2
-    m = len(pattern)
-    n = len(text)
-    h = pow(d, m - 1) % q
-    p_hash = 0
-    t_hash = 0
-    result = []
+        description: "해시 기반으로 부분 문자열의 존재 여부를 빠르게 확인하며, 길이를 이분 탐색으로 늘려가며 공통 문자열을 찾는 코드입니다.",
+        code: `def rabin_karp_check(s1, s2, length, q=1000000007):
+    if length == 0:
+        return True
 
-    for i in range(m):
-        p_hash = (d * p_hash + ord(pattern[i])) % q
-        t_hash = (d * t_hash + ord(text[i])) % q
+    d = 256
+    h = pow(d, length - 1, q)
+    hash_set = set()
 
-    for i in range(n - m + 1):
-        if p_hash == t_hash and text[i:i + m] == pattern:
-            result.append(i)
-        if i < n - m:
-            t_hash = (d * (t_hash - ord(text[i]) * h) + ord(text[i + m])) % q
-    return result`
+    h1 = 0
+    for i in range(length):
+        h1 = (d * h1 + ord(s1[i])) % q
+    hash_set.add(h1)
+
+    for i in range(len(s1) - length):
+        h1 = (d * (h1 - ord(s1[i]) * h) + ord(s1[i + length])) % q
+        if h1 < 0:
+            h1 += q
+        hash_set.add(h1)
+
+    h2 = 0
+    for i in range(length):
+        h2 = (d * h2 + ord(s2[i])) % q
+
+    if h2 in hash_set:
+        if s2[0:length] in s1:
+            return True
+
+    for i in range(len(s2) - length):
+        h2 = (d * (h2 - ord(s2[i]) * h) + ord(s2[i + length])) % q
+        if h2 < 0:
+            h2 += q
+
+        if h2 in hash_set:
+            sub = s2[i + 1:i + 1 + length]
+            if sub in s1:
+                return True
+
+    return False
+
+
+def longest_common_substring(s1, s2):
+    left, right = 0, min(len(s1), len(s2))
+    answer = 0
+
+    while left <= right:
+        mid = (left + right) // 2
+
+        if rabin_karp_check(s1, s2, mid):
+            answer = mid
+            left = mid + 1
+        else:
+            right = mid - 1
+
+    return answer`
     },
     {
         id: 11,
@@ -353,5 +388,155 @@ def boyer_moore(text, pattern):
         code: `def hash3b(key, size):
     digits = [int(ch) for ch in str(key)]
     return sum(digits) % size`
+    },
+    {
+        id: 18,
+        title: "광고 삽입 최적 구간 - 분할정복",
+        subject: "분할정복",
+        category: "분할정복",
+        file: "7주차)_분할정복_발표자료_제출.ipynb",
+        description: "시청자 누적합을 이용해 광고 구간의 최대 시청자 수를 분할정복으로 찾는 코드입니다.",
+        code: `def best_ad_section(total, M, logs):
+    if M <= 0 or M > total:
+        raise ValueError("M must be between 1 and total")
+
+    viewers = [0] * total
+    current = 0
+    for t in range(total):
+        current += sum(1 for start, end in logs if start <= t < end)
+        viewers[t] = current
+
+    window_sum = []
+    current_sum = sum(viewers[:M])
+    window_sum.append(current_sum)
+
+    for i in range(1, total - M + 1):
+        current_sum += viewers[i + M - 1]
+        current_sum -= viewers[i - 1]
+        window_sum.append(current_sum)
+
+    def divide(left, right):
+        if left == right:
+            return window_sum[left], left
+        mid = (left + right) // 2
+        left_result = divide(left, mid)
+        right_result = divide(mid + 1, right)
+        return left_result if left_result[0] >= right_result[0] else right_result
+
+    if not logs:
+        return 0, 0
+
+    return divide(0, len(window_sum) - 1)`
+    },
+    {
+        id: 19,
+        title: "큐 구현 - 연결 리스트 기반",
+        subject: "자료구조",
+        category: "자료구조",
+        file: "Queue.ipynb",
+        description: "노드 연결 구조로 큐의 삽입, 삭제, 출력 기능을 구현한 코드입니다.",
+        code: `class Node:
+    def __init__(self, data):
+        self.data = data
+        self.next = None
+
+
+class Queue:
+    def __init__(self):
+        self.front = None
+        self.tail = None
+
+    def enQueue(self, num):
+        new = Node(num)
+        if self.tail is None:
+            self.front = new
+            self.tail = new
+        else:
+            self.tail.next = new
+            self.tail = new
+
+    def deQueue(self):
+        if self.front is None:
+            return None
+        temp = self.front.data
+        if self.front.next:
+            self.front = self.front.next
+        else:
+            self.front = None
+            self.tail = None
+        return temp`
+    },
+    {
+        id: 20,
+        title: "Heap Tree 구현 - 최소 힙",
+        subject: "자료구조",
+        category: "자료구조",
+        file: "Queue.ipynb",
+        description: "우선순위 큐를 구현하기 위해 힙 구조를 직접 만든 코드입니다.",
+        code: `class Heap:
+    def __init__(self):
+        self.heap = []
+
+    def push(self, value):
+        self.heap.append(value)
+        idx = len(self.heap) - 1
+        while idx > 0:
+            parent = (idx - 1) // 2
+            if self.heap[parent] <= self.heap[idx]:
+                break
+            self.heap[parent], self.heap[idx] = self.heap[idx], self.heap[parent]
+            idx = parent
+
+    def pop(self):
+        if not self.heap:
+            return None
+        root = self.heap[0]
+        last = self.heap.pop()
+        if self.heap:
+            self.heap[0] = last
+            self._sift_down(0)
+        return root
+
+    def _sift_down(self, idx):
+        size = len(self.heap)
+        while True:
+            left = idx * 2 + 1
+            right = left + 1
+            smallest = idx
+            if left < size and self.heap[left] < self.heap[smallest]:
+                smallest = left
+            if right < size and self.heap[right] < self.heap[smallest]:
+                smallest = right
+            if smallest == idx:
+                break
+            self.heap[idx], self.heap[smallest] = self.heap[smallest], self.heap[idx]
+            idx = smallest`
+    },
+    {
+        id: 21,
+        title: "다익스트라 최단 경로 알고리즘",
+        subject: "그래프 알고리즘",
+        category: "그래프",
+        file: "Queue.ipynb",
+        description: "가중치가 있는 그래프에서 최단 경로를 찾는 다익스트라 알고리즘 구현입니다.",
+        code: `def dijkstra(graph, start):
+    INF = float('inf')
+    dist = {node: INF for node in graph}
+    dist[start] = 0
+    visited = set()
+
+    while len(visited) < len(graph):
+        current = None
+        for node in graph:
+            if node not in visited and (current is None or dist[node] < dist[current]):
+                current = node
+        if current is None or dist[current] == INF:
+            break
+        visited.add(current)
+        for nxt, weight in graph[current]:
+            if dist[current] + weight < dist[nxt]:
+                dist[nxt] = dist[current] + weight
+
+    return dist`
     }
 ];
